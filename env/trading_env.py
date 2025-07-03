@@ -8,6 +8,7 @@ from utils.patterns import add_patterns
 from utils.regime import detect_regime
 from env.reward_engine import compute_reward
 from env.slippage import compute_slippage_cost
+from utils.decision import check_ema_confluence, check_mean_reversion_signal, check_trade_conflict
 
 class TradingEnv(gym.Env):
     """
@@ -62,7 +63,9 @@ class TradingEnv(gym.Env):
             # Patterns
             "doji", "hammer", "engulfing", "morning_star",
             # Market regime
-            "market_regime"
+            "market_regime",
+            # New indicators for added features
+            "ema_9", "ema_21", "ema_50", "volume_sma20", "sma_20", "std_20"
         ]
         self.observation_space = spaces.Box(
             low=-np.inf,
@@ -88,6 +91,13 @@ class TradingEnv(gym.Env):
         self.equity_curve = [self.net_worth]
         self.exposure = 0.0
         self.last_action = 0  # HOLD
+        # New variables for added features
+        self.entry_price = 0.0
+        self.risk = 0.0
+        self.stop_loss = 0.0
+        self.trades_today = 0
+        self.current_date = None
+        self.position = 0  # 0=flat, 1=long, -1=short
 
     def reset(self, seed=None, options=None):
         self._reset_state_vars()

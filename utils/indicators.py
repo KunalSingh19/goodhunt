@@ -110,5 +110,14 @@ def add_all_indicators(df):
     df['regime'] = np.where(df['sma_20'] > df['sma_50'], 1, np.where(df['sma_20'] < df['sma_50'], -1, 0))
     # Normalized ATR
     df['atr_norm'] = df['atr'] / (df['Close'] + 1e-9)
+    # EMA indicators for confluence
+    df['ema_9'] = ema(df['Close'], 9)
+    df['ema_21'] = ema(df['Close'], 21)
+    df['ema_50'] = ema(df['Close'], 50)
+    # Volume SMA for slippage calculation
+    df['volume_sma20'] = df['Volume'].rolling(20).mean()
+    # Bollinger Band calculations for mean reversion
+    df['bb_width'] = (df['bb_upper'] - df['bb_lower']) / df['sma_20']
+    df['std_20'] = df['Close'].rolling(20).std()
     df.fillna(method="bfill", inplace=True)
     return df
