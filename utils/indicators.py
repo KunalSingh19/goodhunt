@@ -90,8 +90,39 @@ def rsi(df, period=14):
 
 def price_entropy(df, window=10):
     returns = df['Close'].pct_change().rolling(window)
-    entropy = returns.apply(lambda x: -np.sum(np.nan_to_num(x * np.log(np.abs(x) + 1e-9)))), raw=True)
+    entropy = returns.apply(lambda x: -np.sum(np.nan_to_num(x * np.log(np.abs(x) + 1e-9))), raw=True)
     df['entropy'] = entropy
+    return df
+
+# Feature 1: Volume-Weighted Average Price (VWAP)
+def vwap(df):
+    typical = (df['High'] + df['Low'] + df['Close']) / 3
+    df['cum_typ_vol'] = (typical * df['Volume']).cumsum()
+    df['cum_vol'] = df['Volume'].cumsum()
+    df['vwap'] = df['cum_typ_vol'] / df['cum_vol']
+    return df
+
+# Feature 2: Beta vs Benchmark (e.g., SPY)
+def beta_vs_benchmark(df, bench_df=None, period=30):
+    """Calculate beta relative to benchmark. If no benchmark provided, uses synthetic SPY-like data"""
+    if bench_df is not None:
+        df['bench_ret'] = bench_df['Close'].pct_change()
+    else:
+        # Create synthetic benchmark returns if no benchmark provided
+        df['bench_ret'] = df['Close'].pct_change().rolling(5).mean() * 0.8
+    
+    stock_ret = df['Close'].pct_change()
+    covariance = stock_ret.rolling(period).cov(df['bench_ret'])
+    benchmark_var = df['bench_ret'].rolling(period).var()
+    df['beta'] = covariance / (benchmark_var + 1e-9)
+    return df
+
+# Feature 3: Fisher Transform of RSI
+def fisher_transform_rsi(df):
+    x = df['rsi'] / 100
+    # Clamp x to avoid log(0) or log(negative)
+    x = np.clip(x, 0.01, 0.99)
+    df['rsi_fisher'] = np.log((1 + x) / (1 - x))
     return df
 
 def add_all_indicators(df):
@@ -104,6 +135,12 @@ def add_all_indicators(df):
     df = stochastic(df)
     df = rsi(df)
     df = price_entropy(df)
+    
+    # NEW OBSERVATION ENHANCEMENTS
+    df = vwap(df)
+    df = beta_vs_benchmark(df)
+    df = fisher_transform_rsi(df)
+    
     # Market regime encoding example: bull=1, bear=-1, neutral=0
     df['sma_20'] = df['Close'].rolling(20).mean()
     df['sma_50'] = df['Close'].rolling(50).mean()
@@ -119,5 +156,9 @@ def add_all_indicators(df):
     # Bollinger Band calculations for mean reversion
     df['bb_width'] = (df['bb_upper'] - df['bb_lower']) / df['sma_20']
     df['std_20'] = df['Close'].rolling(20).std()
+    
+    # Additional volatility measure for strategy adaptation
+    df['volatility'] = df['std_20'] / df['sma_20']
+    
     df.fillna(method="bfill", inplace=True)
     return df
