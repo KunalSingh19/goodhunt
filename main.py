@@ -250,8 +250,53 @@ class GoodHuntProductionSystem:
             if self.config.get("features", {}).get("live_trading", False):
                 self.broker_connector = BrokerConnector()
             
-            self.logger.info("✅ All system components initialized")
+                    self.logger.info("✅ All system components initialized")
+        
+        # Initialize next-generation features
+        self._initialize_next_gen_features()
+        
+        return True
+    
+    def _initialize_next_gen_features(self) -> bool:
+        """Initialize next-generation GoodHunt features"""
+        try:
+            self.logger.info("🚀 Initializing Next-Gen Features...")
+            
+            # 1. Neuroevolution system (lazy import)
+            try:
+                from agent.neuroevolution import EvolutionManager, EvolutionConfig
+                evolution_config = EvolutionConfig(population_size=20, generations=10)
+                self.evolution_manager = EvolutionManager(evolution_config)
+                self.logger.info("🧬 Evolution system ready")
+            except ImportError:
+                self.logger.warning("⚠️ Neuroevolution dependencies not available")
+            
+            # 2. Explainability system
+            try:
+                from utils.explainability import RLExplainer
+                feature_names = ['rsi', 'macd', 'volume', 'volatility', 'sentiment']
+                self.explainer = RLExplainer(feature_names)
+                self.logger.info("🔍 Explainability system ready")
+            except ImportError:
+                self.logger.warning("⚠️ Explainability dependencies not available")
+            
+            # 3. Enhanced transaction costs
+            try:
+                from env.enhanced_slippage import EnhancedTransactionCostModel
+                self.cost_model = EnhancedTransactionCostModel()
+                self.logger.info("💰 Enhanced transaction cost model ready")
+            except ImportError:
+                self.logger.warning("⚠️ Enhanced slippage dependencies not available")
+            
+            # 4. Real-time dashboard (available via separate launch)
+            self.logger.info("📊 Dashboard available via: streamlit run dashboard/realtime_dashboard.py")
+            
+            self.logger.info("✅ Next-gen features initialized successfully")
             return True
+            
+        except Exception as e:
+            self.logger.error(f"❌ Next-gen features initialization failed: {e}")
+            return False
         except Exception as e:
             self.logger.error(f"❌ Component initialization failed: {e}")
             return False
