@@ -1,0 +1,47 @@
+# GoodHunt v3+ RL Trading Bot Config
+
+data:
+  assets: ["AAPL", "BTC-USD"]
+  interval: "1h"
+  start: "2022-01-01"
+  end: "2024-12-31"
+
+env:
+  initial_balance: 100.0
+  window_size: 50
+  fee_pct: 0.001
+  slippage_pct: 0.0015
+  liquidity_threshold: 1000
+  position_sizing: "volatility"
+  exposure_cap: 0.7
+  profit_target: 0.05
+  stop_loss: 0.03
+  max_drawdown: 0.05
+
+reward:
+  mode: "sharpe"      # [sharpe, sortino, rr, basic]
+  decay: 0.995
+  win_boost: 0.01
+  hold_penalty: 0.01
+  chaos_flat_bonus: 0.02
+  reward_clip: 2.0
+
+agent:
+  algo: "PPO"
+  total_timesteps: 50000
+  policy: "MlpPolicy"
+  tensorboard_log: "tensorboard"
+  multi_agent: false
+
+logging:
+  log_dir: "logs"
+  trade_log: "backtest/trades.csv"
+  equity_curve: "backtest/equity_curve.csv"
+  plot_dir: "backtest/plots"
+  tensorboard: true
+
+backtest:
+  test_split: 0.2
+  multi_asset: true
+  plot_equity_curve: true
+  plot_confusion_matrix: true
