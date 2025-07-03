@@ -1,0 +1,60 @@
+{
+  "system": {
+    "max_memory_usage": 80,
+    "max_cpu_usage": 90,
+    "log_level": "INFO"
+  },
+  "trading": {
+    "max_positions": 10,
+    "max_daily_loss": 0.05,
+    "risk_limit": 0.02
+  },
+  "features": {
+    "enable_all_categories": true,
+    "live_trading": false,
+    "dashboard": true,
+    "alerts": true
+  },
+  "categories": {
+    "A_observations": {
+      "enabled": true,
+      "features": 15
+    },
+    "B_risk": {
+      "enabled": true,
+      "features": 15
+    },
+    "C_execution": {
+      "enabled": true,
+      "features": 15
+    },
+    "D_reward": {
+      "enabled": true,
+      "features": 15
+    },
+    "E_analytics": {
+      "enabled": true,
+      "features": 15
+    },
+    "F_adaptive": {
+      "enabled": true,
+      "features": 15
+    },
+    "G_hybrid": {
+      "enabled": true,
+      "features": 15
+    },
+    "H_portfolio": {
+      "enabled": true,
+      "features": 15
+    },
+    "I_live": {
+      "enabled": false,
+      "features": 15
+    },
+    "J_research": {
+      "enabled": true,
+      "features": 15
+    }
+  }
+}
