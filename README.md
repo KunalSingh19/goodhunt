@@ -117,8 +117,8 @@ GoodHunt v3+ is a comprehensive, production-grade algorithmic trading platform f
 ### Quick Setup
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/goodhunt-v3-plus.git
-cd goodhunt-v3-plus
+git clone https://github.com/KunalSingh19/goodhunt
+cd goodhunt
 
 # Install dependencies
 pip install -r requirements.txt
@@ -341,19 +341,7 @@ mypy goodhunt/
 - **Throughput**: 1000+ trades per second
 - **Memory Usage**: < 2GB for full feature set
 - **CPU Usage**: < 50% on 4-core system
-
-## 🆘 Support
-
-### Community
-- [Discord Server](https://discord.gg/goodhunt)
-- [Telegram Channel](https://t.me/goodhunt)
-- [Reddit Community](https://reddit.com/r/goodhunt)
-
-### Professional Support
-- Enterprise Support: enterprise@goodhunt.ai
-- Custom Development: dev@goodhunt.ai
-- Training & Consulting: training@goodhunt.ai
-
+  
 ## � License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
